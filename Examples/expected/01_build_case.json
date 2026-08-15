@@ -1,0 +1,30 @@
+{
+  "command": "build_case",
+  "errors": [],
+  "request_id": "example-01-build-case",
+  "result": {
+    "build_complete": true,
+    "case_file": "case.docchrono.json",
+    "counts": {
+      "claims": 10,
+      "documents": 6,
+      "entities": 12,
+      "events": 5,
+      "relationships": 16,
+      "review_items": 1
+    },
+    "docchrono_version": "0.1.0",
+    "failures": [],
+    "privacy": {
+      "document_raw_text_saved": false,
+      "evidence_quotes_saved": true,
+      "local_source_paths_saved": false
+    },
+    "strict": true
+  },
+  "schema_version": "1.0",
+  "status": "complete",
+  "warnings": [
+    "The saved case omits document raw text and local source paths; evidence quotations remain."
+  ]
+}

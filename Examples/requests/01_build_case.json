@@ -1,0 +1,10 @@
+{
+  "command": "build_case",
+  "parameters": {
+    "case_file": "../../artifacts/case.docchrono.json",
+    "source_directory": "../data",
+    "strict": true
+  },
+  "request_id": "example-01-build-case",
+  "schema_version": "1.0"
+}

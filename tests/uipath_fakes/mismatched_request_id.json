@@ -1,0 +1,8 @@
+{
+  "command": "build_case",
+  "parameters": {
+    "fake_mode": "mismatched_request_id"
+  },
+  "request_id": "xaml-mismatch-test",
+  "schema_version": "1.0"
+}

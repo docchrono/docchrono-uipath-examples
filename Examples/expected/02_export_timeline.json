@@ -1,0 +1,219 @@
+{
+  "command": "export_timeline",
+  "errors": [],
+  "request_id": "example-02-export-timeline",
+  "result": {
+    "dated_count": 5,
+    "events": [
+      {
+        "chronology_position": 1,
+        "date": "2026-03-03",
+        "date_status": "dated",
+        "evidence": [
+          {
+            "location": {
+              "field": null,
+              "page": null,
+              "paragraph": 1,
+              "raw_end": 114,
+              "raw_start": 47,
+              "sentence": 1
+            },
+            "quote": "Maya Chen approved Invoice #381 for Northstar Logistics Corporation",
+            "sources": [
+              "01_invoice_approval.txt"
+            ]
+          }
+        ],
+        "participants": [
+          "Invoice #381",
+          "Maya Chen",
+          "Northstar Logistics Corporation"
+        ],
+        "provisional": true,
+        "score": 0.92,
+        "temporal": [
+          {
+            "end": "2026-03-03",
+            "is_relative": false,
+            "original_text": "March 3, 2026",
+            "precision": "DAY",
+            "resolved": true,
+            "start": "2026-03-03",
+            "timezone": null
+          }
+        ],
+        "title": "Approved: Invoice #381 for Northstar Logistics Corporation",
+        "type": "DECISION"
+      },
+      {
+        "chronology_position": 2,
+        "date": "2026-03-05",
+        "date_status": "dated",
+        "evidence": [
+          {
+            "location": {
+              "field": null,
+              "page": null,
+              "paragraph": 1,
+              "raw_end": 122,
+              "raw_start": 47,
+              "sentence": null
+            },
+            "quote": "Jordan Carmichael approved Invoice #700 for Northstar Logistics Corporation",
+            "sources": [
+              "05_review_candidate_a.md"
+            ]
+          }
+        ],
+        "participants": [
+          "Invoice #700",
+          "Jordan Carmichael",
+          "Northstar Logistics Corporation"
+        ],
+        "provisional": true,
+        "score": 0.92,
+        "temporal": [
+          {
+            "end": "2026-03-05",
+            "is_relative": false,
+            "original_text": "March 5, 2026",
+            "precision": "DAY",
+            "resolved": true,
+            "start": "2026-03-05",
+            "timezone": null
+          }
+        ],
+        "title": "Approved: Invoice #700 for Northstar Logistics Corporation",
+        "type": "DECISION"
+      },
+      {
+        "chronology_position": 3,
+        "date": "2026-03-06",
+        "date_status": "dated",
+        "evidence": [
+          {
+            "location": {
+              "field": null,
+              "page": null,
+              "paragraph": 1,
+              "raw_end": 122,
+              "raw_start": 47,
+              "sentence": null
+            },
+            "quote": "Jordon Carmichael approved Invoice #701 for Northstar Logistics Corporation",
+            "sources": [
+              "06_review_candidate_b.md"
+            ]
+          }
+        ],
+        "participants": [
+          "Invoice #701",
+          "Jordon Carmichael",
+          "Northstar Logistics Corporation"
+        ],
+        "provisional": true,
+        "score": 0.92,
+        "temporal": [
+          {
+            "end": "2026-03-06",
+            "is_relative": false,
+            "original_text": "March 6, 2026",
+            "precision": "DAY",
+            "resolved": true,
+            "start": "2026-03-06",
+            "timezone": null
+          }
+        ],
+        "title": "Approved: Invoice #701 for Northstar Logistics Corporation",
+        "type": "DECISION"
+      },
+      {
+        "chronology_position": 4,
+        "date": "2026-03-07",
+        "date_status": "dated",
+        "evidence": [
+          {
+            "location": {
+              "field": null,
+              "page": null,
+              "paragraph": 0,
+              "raw_end": 260,
+              "raw_start": 211,
+              "sentence": null
+            },
+            "quote": "Northstar Logistics Corporation paid Payment #982",
+            "sources": [
+              "04_payment_notice.eml"
+            ]
+          }
+        ],
+        "participants": [
+          "Northstar Logistics Corporation",
+          "Payment #982"
+        ],
+        "provisional": true,
+        "score": 0.92,
+        "temporal": [
+          {
+            "end": "2026-03-07",
+            "is_relative": false,
+            "original_text": "March 7, 2026",
+            "precision": "DAY",
+            "resolved": true,
+            "start": "2026-03-07",
+            "timezone": null
+          }
+        ],
+        "title": "Paid: Payment #982",
+        "type": "TRANSACTION"
+      },
+      {
+        "chronology_position": 5,
+        "date": "2026-03-07T10:15:00-06:00",
+        "date_status": "dated",
+        "evidence": [
+          {
+            "location": {
+              "field": null,
+              "page": null,
+              "paragraph": null,
+              "raw_end": 80,
+              "raw_start": 18,
+              "sentence": null
+            },
+            "quote": "liam.ortiz@example.test>\nTo: Maya Chen <maya.chen@example.test",
+            "sources": [
+              "04_payment_notice.eml"
+            ]
+          }
+        ],
+        "participants": [
+          "liam.ortiz@example.test",
+          "maya.chen@example.test"
+        ],
+        "provisional": true,
+        "score": 0.995,
+        "temporal": [
+          {
+            "end": "2026-03-07T10:15:00-06:00",
+            "is_relative": false,
+            "original_text": "07 Mar 2026 10:15:00 -0600",
+            "precision": "INSTANT",
+            "resolved": true,
+            "start": "2026-03-07T10:15:00-06:00",
+            "timezone": "UTC\\-06:00"
+          }
+        ],
+        "title": "Email Sent",
+        "type": "COMMUNICATION"
+      }
+    ],
+    "includes_undated": true,
+    "total_count": 5,
+    "undated_count": 0
+  },
+  "schema_version": "1.0",
+  "status": "complete",
+  "warnings": []
+}

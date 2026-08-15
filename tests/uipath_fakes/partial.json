@@ -1,0 +1,8 @@
+{
+  "command": "build_case",
+  "parameters": {
+    "fake_mode": "partial"
+  },
+  "request_id": "xaml-partial-test",
+  "schema_version": "1.0"
+}

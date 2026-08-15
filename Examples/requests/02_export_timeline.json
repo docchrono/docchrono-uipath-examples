@@ -1,0 +1,8 @@
+{
+  "command": "export_timeline",
+  "parameters": {
+    "case_file": "../../artifacts/case.docchrono.json"
+  },
+  "request_id": "example-02-export-timeline",
+  "schema_version": "1.0"
+}

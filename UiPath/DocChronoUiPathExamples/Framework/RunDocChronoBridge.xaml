@@ -1,0 +1,161 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Framework_RunDocChronoBridge" mva:VisualBasic.Settings="{x:Null}"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
+  xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib"
+  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib"
+  xmlns:ui="http://schemas.uipath.com/workflow/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_PythonExe" Type="InArgument(x:String)" />
+    <x:Property Name="in_WorkingDirectory" Type="InArgument(x:String)" />
+    <x:Property Name="in_RequestPath" Type="InArgument(x:String)" />
+    <x:Property Name="in_ResponsePath" Type="InArgument(x:String)" />
+    <x:Property Name="in_TimeoutMs" Type="InArgument(x:Int32)" />
+    <x:Property Name="out_Stdout" Type="OutArgument(x:String)" />
+    <x:Property Name="out_Stderr" Type="OutArgument(x:String)" />
+    <x:Property Name="out_ExitCode" Type="OutArgument(x:Int32)" />
+    <x:Property Name="out_TimedOut" Type="OutArgument(x:Boolean)" />
+  </x:Members>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Text.Json</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.Text.Json</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Run DocChrono bridge" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <ui:LogMessage DisplayName="Log bridge request start" Level="Info">
+      <ui:LogMessage.Message>
+        <InArgument x:TypeArguments="x:Object">["Starting DocChrono request " &amp; Path.GetFileName(in_RequestPath)]</InArgument>
+      </ui:LogMessage.Message>
+    </ui:LogMessage>
+    <ui:InvokeCode
+      Code="out_Stdout = String.Empty&#xA;out_Stderr = String.Empty&#xA;out_ExitCode = -1&#xA;out_TimedOut = False&#xA;&#xA;If in_TimeoutMs &lt;= 0 Then&#xA;    Throw New ArgumentOutOfRangeException(&quot;in_TimeoutMs&quot;)&#xA;End If&#xA;&#xA;Dim resolvedWorkingDirectory = Path.GetFullPath(in_WorkingDirectory)&#xA;Dim resolvedPythonExecutable = If(Path.IsPathRooted(in_PythonExe), in_PythonExe, Path.GetFullPath(Path.Combine(resolvedWorkingDirectory, in_PythonExe)))&#xA;Dim responseDirectory = Path.GetDirectoryName(in_ResponsePath)&#xA;If Not String.IsNullOrWhiteSpace(responseDirectory) Then&#xA;    Directory.CreateDirectory(responseDirectory)&#xA;End If&#xA;If File.Exists(in_ResponsePath) Then&#xA;    File.Delete(in_ResponsePath)&#xA;End If&#xA;&#xA;Dim startInfo As New ProcessStartInfo()&#xA;startInfo.FileName = resolvedPythonExecutable&#xA;startInfo.WorkingDirectory = resolvedWorkingDirectory&#xA;startInfo.UseShellExecute = False&#xA;startInfo.CreateNoWindow = True&#xA;startInfo.RedirectStandardOutput = True&#xA;startInfo.RedirectStandardError = True&#xA;startInfo.ArgumentList.Add(&quot;-m&quot;)&#xA;startInfo.ArgumentList.Add(&quot;docchrono_uipath_bridge&quot;)&#xA;startInfo.ArgumentList.Add(&quot;--request&quot;)&#xA;startInfo.ArgumentList.Add(in_RequestPath)&#xA;startInfo.ArgumentList.Add(&quot;--response&quot;)&#xA;startInfo.ArgumentList.Add(in_ResponsePath)&#xA;&#xA;Using bridgeProcess As New Process()&#xA;    bridgeProcess.StartInfo = startInfo&#xA;    If Not bridgeProcess.Start() Then&#xA;        Throw New InvalidOperationException(&quot;The DocChrono bridge process did not start.&quot;)&#xA;    End If&#xA;&#xA;    Dim stdoutTask = bridgeProcess.StandardOutput.ReadToEndAsync()&#xA;    Dim stderrTask = bridgeProcess.StandardError.ReadToEndAsync()&#xA;&#xA;    If Not bridgeProcess.WaitForExit(in_TimeoutMs) Then&#xA;        out_TimedOut = True&#xA;        Try&#xA;            bridgeProcess.Kill(True)&#xA;        Catch&#xA;            bridgeProcess.Kill()&#xA;        End Try&#xA;        bridgeProcess.WaitForExit()&#xA;    End If&#xA;&#xA;    out_Stdout = stdoutTask.GetAwaiter().GetResult()&#xA;    out_Stderr = stderrTask.GetAwaiter().GetResult()&#xA;    If Not out_TimedOut Then&#xA;        out_ExitCode = bridgeProcess.ExitCode&#xA;    End If&#xA;End Using"
+      ContinueOnError="{x:Null}"
+      DisplayName="Launch isolated Python bridge"
+      Language="VBNet">
+      <ui:InvokeCode.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument">
+          <InArgument x:TypeArguments="x:String" x:Key="in_PythonExe">[in_PythonExe]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_WorkingDirectory">[in_WorkingDirectory]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_RequestPath">[in_RequestPath]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_ResponsePath">[in_ResponsePath]</InArgument>
+          <InArgument x:TypeArguments="x:Int32" x:Key="in_TimeoutMs">[in_TimeoutMs]</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="out_Stdout">[out_Stdout]</OutArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="out_Stderr">[out_Stderr]</OutArgument>
+          <OutArgument x:TypeArguments="x:Int32" x:Key="out_ExitCode">[out_ExitCode]</OutArgument>
+          <OutArgument x:TypeArguments="x:Boolean" x:Key="out_TimedOut">[out_TimedOut]</OutArgument>
+        </scg:Dictionary>
+      </ui:InvokeCode.Arguments>
+    </ui:InvokeCode>
+    <If DisplayName="Fail timed-out bridge request">
+      <If.Condition>
+        <InArgument x:TypeArguments="x:Boolean">[out_TimedOut]</InArgument>
+      </If.Condition>
+      <If.Then>
+        <Sequence DisplayName="Timeout handler">
+          <Throw DisplayName="Throw bridge timeout">
+            <Throw.Exception>
+              <InArgument x:TypeArguments="s:Exception">[New TimeoutException("DocChrono request exceeded " &amp; in_TimeoutMs.ToString() &amp; " ms.")]</InArgument>
+            </Throw.Exception>
+          </Throw>
+        </Sequence>
+      </If.Then>
+    </If>
+    <If DisplayName="Require response artifact">
+      <If.Condition>
+        <InArgument x:TypeArguments="x:Boolean">[Not File.Exists(in_ResponsePath) OrElse New FileInfo(in_ResponsePath).Length = 0]</InArgument>
+      </If.Condition>
+      <If.Then>
+        <Sequence DisplayName="Missing-response handler">
+          <Throw DisplayName="Throw missing response">
+            <Throw.Exception>
+              <InArgument x:TypeArguments="s:Exception">[New InvalidDataException("DocChrono did not produce a non-empty response file.")]</InArgument>
+            </Throw.Exception>
+          </Throw>
+        </Sequence>
+      </If.Then>
+    </If>
+    <ui:InvokeCode
+      Code="Const maxResponseBytes As Long = 67108864&#xA;&#xA;Try&#xA;    Dim responseInfo As New FileInfo(in_ResponsePath)&#xA;    If responseInfo.Length &gt; maxResponseBytes Then&#xA;        Throw New InvalidDataException(&quot;DocChrono response exceeds the 64 MiB workflow limit.&quot;)&#xA;    End If&#xA;&#xA;    Dim requestJson = File.ReadAllText(in_RequestPath, System.Text.Encoding.UTF8)&#xA;    Dim responseJson = File.ReadAllText(in_ResponsePath, System.Text.Encoding.UTF8)&#xA;&#xA;    Using requestDocument As JsonDocument = JsonDocument.Parse(requestJson)&#xA;        Using responseDocument As JsonDocument = JsonDocument.Parse(responseJson)&#xA;            Dim requestRoot = requestDocument.RootElement&#xA;            Dim responseRoot = responseDocument.RootElement&#xA;            If requestRoot.ValueKind &lt;&gt; JsonValueKind.Object OrElse responseRoot.ValueKind &lt;&gt; JsonValueKind.Object Then&#xA;                Throw New InvalidDataException(&quot;DocChrono request and response envelopes must be JSON objects.&quot;)&#xA;            End If&#xA;&#xA;            Dim requestSchemaElement As JsonElement&#xA;            Dim requestIdElement As JsonElement&#xA;            Dim requestCommandElement As JsonElement&#xA;            If Not requestRoot.TryGetProperty(&quot;schema_version&quot;, requestSchemaElement) OrElse requestSchemaElement.ValueKind &lt;&gt; JsonValueKind.String Then&#xA;                Throw New InvalidDataException(&quot;DocChrono request schema_version is missing or invalid.&quot;)&#xA;            End If&#xA;            If Not requestRoot.TryGetProperty(&quot;request_id&quot;, requestIdElement) OrElse requestIdElement.ValueKind &lt;&gt; JsonValueKind.String Then&#xA;                Throw New InvalidDataException(&quot;DocChrono request_id is missing or invalid.&quot;)&#xA;            End If&#xA;            If Not requestRoot.TryGetProperty(&quot;command&quot;, requestCommandElement) OrElse requestCommandElement.ValueKind &lt;&gt; JsonValueKind.String Then&#xA;                Throw New InvalidDataException(&quot;DocChrono request command is missing or invalid.&quot;)&#xA;            End If&#xA;&#xA;            Dim responseSchemaElement As JsonElement&#xA;            Dim responseIdElement As JsonElement&#xA;            Dim responseCommandElement As JsonElement&#xA;            Dim responseStatusElement As JsonElement&#xA;            Dim responseErrorsElement As JsonElement&#xA;            Dim responseWarningsElement As JsonElement&#xA;            Dim responseResultElement As JsonElement&#xA;            If Not responseRoot.TryGetProperty(&quot;schema_version&quot;, responseSchemaElement) OrElse responseSchemaElement.ValueKind &lt;&gt; JsonValueKind.String Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response schema_version is missing or invalid.&quot;)&#xA;            End If&#xA;            If Not responseRoot.TryGetProperty(&quot;request_id&quot;, responseIdElement) OrElse responseIdElement.ValueKind &lt;&gt; JsonValueKind.String Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response request_id is missing or invalid.&quot;)&#xA;            End If&#xA;            If Not responseRoot.TryGetProperty(&quot;command&quot;, responseCommandElement) OrElse responseCommandElement.ValueKind &lt;&gt; JsonValueKind.String Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response command is missing or invalid.&quot;)&#xA;            End If&#xA;            If Not responseRoot.TryGetProperty(&quot;status&quot;, responseStatusElement) OrElse responseStatusElement.ValueKind &lt;&gt; JsonValueKind.String Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response status is missing or invalid.&quot;)&#xA;            End If&#xA;            If Not responseRoot.TryGetProperty(&quot;errors&quot;, responseErrorsElement) OrElse responseErrorsElement.ValueKind &lt;&gt; JsonValueKind.Array Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response errors must be an array.&quot;)&#xA;            End If&#xA;            If Not responseRoot.TryGetProperty(&quot;warnings&quot;, responseWarningsElement) OrElse responseWarningsElement.ValueKind &lt;&gt; JsonValueKind.Array Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response warnings must be an array.&quot;)&#xA;            End If&#xA;            If Not responseRoot.TryGetProperty(&quot;result&quot;, responseResultElement) Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response result is missing.&quot;)&#xA;            End If&#xA;&#xA;            Dim propertyCount As Integer = 0&#xA;            For Each responseProperty In responseRoot.EnumerateObject()&#xA;                propertyCount += 1&#xA;                Select Case responseProperty.Name&#xA;                    Case &quot;schema_version&quot;, &quot;request_id&quot;, &quot;command&quot;, &quot;status&quot;, &quot;result&quot;, &quot;warnings&quot;, &quot;errors&quot;&#xA;                    Case Else&#xA;                        Throw New InvalidDataException(&quot;DocChrono response contains an unsupported top-level field.&quot;)&#xA;                End Select&#xA;            Next&#xA;            If propertyCount &lt;&gt; 7 Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response must contain exactly seven top-level fields.&quot;)&#xA;            End If&#xA;&#xA;            Dim requestSchema = requestSchemaElement.GetString()&#xA;            Dim requestId = requestIdElement.GetString()&#xA;            Dim requestCommand = requestCommandElement.GetString()&#xA;            Dim responseStatus = responseStatusElement.GetString()&#xA;            If Not String.Equals(requestSchema, &quot;1.0&quot;, StringComparison.Ordinal) OrElse Not String.Equals(responseSchemaElement.GetString(), requestSchema, StringComparison.Ordinal) Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response schema_version does not match the request.&quot;)&#xA;            End If&#xA;            If Not String.Equals(responseIdElement.GetString(), requestId, StringComparison.Ordinal) Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response request_id does not match the request.&quot;)&#xA;            End If&#xA;            If Not String.Equals(responseCommandElement.GetString(), requestCommand, StringComparison.Ordinal) Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response command does not match the request.&quot;)&#xA;            End If&#xA;&#xA;            Dim expectedStatus As String&#xA;            Select Case out_ExitCode&#xA;                Case 0&#xA;                    expectedStatus = &quot;complete&quot;&#xA;                Case 2&#xA;                    expectedStatus = &quot;partial&quot;&#xA;                Case 1, 70&#xA;                    expectedStatus = &quot;error&quot;&#xA;                Case Else&#xA;                    Throw New InvalidDataException(&quot;DocChrono returned an unsupported process exit code.&quot;)&#xA;            End Select&#xA;            If Not String.Equals(responseStatus, expectedStatus, StringComparison.Ordinal) Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response status does not match the process exit code.&quot;)&#xA;            End If&#xA;            If expectedStatus = &quot;error&quot; Then&#xA;                If responseErrorsElement.GetArrayLength() = 0 OrElse responseResultElement.ValueKind &lt;&gt; JsonValueKind.Null Then&#xA;                    Throw New InvalidDataException(&quot;DocChrono error response has an invalid errors or result field.&quot;)&#xA;                End If&#xA;            Else&#xA;                If responseErrorsElement.GetArrayLength() &lt;&gt; 0 OrElse responseResultElement.ValueKind = JsonValueKind.Null OrElse responseResultElement.ValueKind = JsonValueKind.Undefined Then&#xA;                    Throw New InvalidDataException(&quot;DocChrono successful response has an invalid errors or result field.&quot;)&#xA;                End If&#xA;            End If&#xA;        End Using&#xA;    End Using&#xA;Catch validationError As InvalidDataException&#xA;    Throw&#xA;Catch&#xA;    Throw New InvalidDataException(&quot;DocChrono response envelope could not be validated.&quot;)&#xA;End Try"
+      ContinueOnError="{x:Null}"
+      DisplayName="Validate correlated response envelope"
+      Language="VBNet">
+      <ui:InvokeCode.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument">
+          <InArgument x:TypeArguments="x:String" x:Key="in_RequestPath">[in_RequestPath]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_ResponsePath">[in_ResponsePath]</InArgument>
+          <InArgument x:TypeArguments="x:Int32" x:Key="out_ExitCode">[out_ExitCode]</InArgument>
+        </scg:Dictionary>
+      </ui:InvokeCode.Arguments>
+    </ui:InvokeCode>
+    <ui:InvokeCode
+      Code="Try&#xA;    Dim responseJson = File.ReadAllText(in_ResponsePath, System.Text.Encoding.UTF8)&#xA;    Using responseDocument As JsonDocument = JsonDocument.Parse(responseJson)&#xA;        Dim responseRoot = responseDocument.RootElement&#xA;        Dim responseWarningsElement = responseRoot.GetProperty(&quot;warnings&quot;)&#xA;        Dim responseErrorsElement = responseRoot.GetProperty(&quot;errors&quot;)&#xA;        Dim responseResultElement = responseRoot.GetProperty(&quot;result&quot;)&#xA;&#xA;        For Each warningElement In responseWarningsElement.EnumerateArray()&#xA;            If warningElement.ValueKind &lt;&gt; JsonValueKind.String Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response warnings must contain only strings.&quot;)&#xA;            End If&#xA;        Next&#xA;&#xA;        For Each errorElement In responseErrorsElement.EnumerateArray()&#xA;            If errorElement.ValueKind &lt;&gt; JsonValueKind.Object Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response error items must be JSON objects.&quot;)&#xA;            End If&#xA;            Dim errorCodeElement As JsonElement&#xA;            Dim errorMessageElement As JsonElement&#xA;            If Not errorElement.TryGetProperty(&quot;code&quot;, errorCodeElement) OrElse errorCodeElement.ValueKind &lt;&gt; JsonValueKind.String OrElse String.IsNullOrWhiteSpace(errorCodeElement.GetString()) Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response error code is missing or invalid.&quot;)&#xA;            End If&#xA;            If Not errorElement.TryGetProperty(&quot;message&quot;, errorMessageElement) OrElse errorMessageElement.ValueKind &lt;&gt; JsonValueKind.String OrElse String.IsNullOrWhiteSpace(errorMessageElement.GetString()) Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response error message is missing or invalid.&quot;)&#xA;            End If&#xA;            Dim errorPropertyCount As Integer = 0&#xA;            For Each errorProperty In errorElement.EnumerateObject()&#xA;                errorPropertyCount += 1&#xA;                Select Case errorProperty.Name&#xA;                    Case &quot;code&quot;, &quot;message&quot;&#xA;                    Case Else&#xA;                        Throw New InvalidDataException(&quot;DocChrono response error item contains an unsupported field.&quot;)&#xA;                End Select&#xA;            Next&#xA;            If errorPropertyCount &lt;&gt; 2 Then&#xA;                Throw New InvalidDataException(&quot;DocChrono response error item must contain exactly code and message.&quot;)&#xA;            End If&#xA;        Next&#xA;&#xA;        Select Case out_ExitCode&#xA;            Case 0, 2&#xA;                If responseResultElement.ValueKind &lt;&gt; JsonValueKind.Object OrElse responseErrorsElement.GetArrayLength() &lt;&gt; 0 Then&#xA;                    Throw New InvalidDataException(&quot;DocChrono complete or partial response result must be a JSON object with no errors.&quot;)&#xA;                End If&#xA;            Case 1, 70&#xA;                If responseResultElement.ValueKind &lt;&gt; JsonValueKind.Null OrElse responseErrorsElement.GetArrayLength() = 0 Then&#xA;                    Throw New InvalidDataException(&quot;DocChrono error response must have a null result and at least one structured error.&quot;)&#xA;                End If&#xA;            Case Else&#xA;                Throw New InvalidDataException(&quot;DocChrono returned an unsupported process exit code.&quot;)&#xA;        End Select&#xA;    End Using&#xA;Catch validationError As InvalidDataException&#xA;    Throw&#xA;Catch&#xA;    Throw New InvalidDataException(&quot;DocChrono response value shapes could not be validated.&quot;)&#xA;End Try"
+      ContinueOnError="{x:Null}"
+      DisplayName="Validate response value shapes"
+      Language="VBNet">
+      <ui:InvokeCode.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument">
+          <InArgument x:TypeArguments="x:String" x:Key="in_ResponsePath">[in_ResponsePath]</InArgument>
+          <InArgument x:TypeArguments="x:Int32" x:Key="out_ExitCode">[out_ExitCode]</InArgument>
+        </scg:Dictionary>
+      </ui:InvokeCode.Arguments>
+    </ui:InvokeCode>
+    <If DisplayName="Fail unsuccessful bridge request">
+      <If.Condition>
+        <InArgument x:TypeArguments="x:Boolean">[out_ExitCode &lt;&gt; 0 AndAlso out_ExitCode &lt;&gt; 2]</InArgument>
+      </If.Condition>
+      <If.Then>
+        <Sequence DisplayName="Exit-code handler">
+          <Throw DisplayName="Throw bridge failure">
+            <Throw.Exception>
+              <InArgument x:TypeArguments="s:Exception">[New InvalidOperationException("DocChrono bridge failed with exit code " &amp; out_ExitCode.ToString() &amp; ". Inspect the validated error response; stderr is intentionally not logged.")]</InArgument>
+            </Throw.Exception>
+          </Throw>
+        </Sequence>
+      </If.Then>
+    </If>
+    <If DisplayName="Fail closed on partial result">
+      <If.Condition>
+        <InArgument x:TypeArguments="x:Boolean">[out_ExitCode = 2]</InArgument>
+      </If.Condition>
+      <If.Then>
+        <Sequence DisplayName="Partial-result handler">
+          <Throw DisplayName="Throw partial-result exception">
+            <Throw.Exception>
+              <InArgument x:TypeArguments="s:Exception">[New InvalidDataException("DocChrono returned a validated partial result. Preserve the response and route it to an explicit review or retry workflow.")]</InArgument>
+            </Throw.Exception>
+          </Throw>
+        </Sequence>
+      </If.Then>
+    </If>
+    <ui:LogMessage DisplayName="Log bridge request result" Level="Info">
+      <ui:LogMessage.Message>
+        <InArgument x:TypeArguments="x:Object">["DocChrono request finished with exit code " &amp; out_ExitCode.ToString() &amp; "; response " &amp; Path.GetFileName(in_ResponsePath)]</InArgument>
+      </ui:LogMessage.Message>
+    </ui:LogMessage>
+  </Sequence>
+</Activity>
