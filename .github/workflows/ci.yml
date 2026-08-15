@@ -57,6 +57,12 @@ jobs:
           persist-credentials: false
       - name: Install pinned UiPath CLI
         run: npm install --global @uipath/cli@1.197.1
+      - name: Verify pinned UiPath CLI configuration
+        shell: pwsh
+        run: |
+          uip --version
+          uip config get autoVersionSync --output json
+          uip config get version --output json
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:

@@ -23,6 +23,8 @@ Supported development interpreters are CPython 3.11-3.13. Keep `docchrono==0.1.0
 
 Only `UiPath/DocChronoUiPathExamples/` is the UiPath project. Keep the root Python bridge, `Examples` fixtures/requests/expected snapshots, `.venv`, tests, and generated `artifacts` physically outside that publish root.
 
+The repository's `.uipath/config.json` disables automatic CLI/tool version synchronization and pins the `1.197` line used by CI. Review a CLI-line change explicitly with all XAML, runtime, and package checks; do not let a hosted runner silently upgrade it.
+
 ## Required checks
 
 ```powershell

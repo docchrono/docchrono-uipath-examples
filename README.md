@@ -47,6 +47,7 @@ Read [architecture](docs/architecture.md) for component boundaries and failure f
 |---|---|
 | UiPath project | Windows compatibility, Visual Basic expressions, background-capable XAML process |
 | UiPath activity | `UiPath.System.Activities` `26.6.1` |
+| UiPath CLI in CI | `@uipath/cli` `1.197.1`; repository config disables automatic version sync and pins the `1.197` tool line |
 | Python | 64-bit CPython `3.11`, `3.12`, or `3.13` |
 | DocChrono | exactly `0.1.0` |
 | Operating system | Windows robot or Studio machine with permission to start the configured Python executable |
@@ -131,6 +132,7 @@ At the bridge CLI boundary, exit `2` is a written, usable partial result. The sa
 |   |-- expected/                     # five verified response snapshots
 |   `-- requests/                     # five contract-v1 requests
 |-- src/docchrono_uipath_bridge/      # validated JSON bridge
+|-- .uipath/config.json               # reproducible CLI/tool version policy
 |-- scripts/generate_synthetic_data.py
 |-- tests/                            # contract and integration tests
 |-- docs/                             # production and example guides
