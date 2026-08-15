@@ -1,0 +1,8 @@
+{
+  "command": "build_case",
+  "parameters": {
+    "fake_mode": "malformed_result"
+  },
+  "request_id": "xaml-malformed-result-test",
+  "schema_version": "1.0"
+}

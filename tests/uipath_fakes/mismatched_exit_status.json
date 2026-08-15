@@ -1,0 +1,8 @@
+{
+  "command": "build_case",
+  "parameters": {
+    "fake_mode": "mismatched_exit_status"
+  },
+  "request_id": "xaml-exit-status-test",
+  "schema_version": "1.0"
+}

@@ -1,0 +1,101 @@
+{
+  "command": "export_evidence",
+  "errors": [],
+  "request_id": "example-03-export-evidence",
+  "result": {
+    "human_review_notice": "Supporting and opposing source claims are preserved separately; this export does not decide which claim is true.",
+    "relationship_count": 1,
+    "relationship_type_filter": "WORKS_FOR",
+    "relationships": [
+      {
+        "opposing_evidence": [
+          {
+            "evidence": [
+              {
+                "location": {
+                  "field": null,
+                  "page": null,
+                  "paragraph": 1,
+                  "raw_end": 93,
+                  "raw_start": 34,
+                  "sentence": null
+                },
+                "quote": "Maya Chen does not work for Northstar Logistics Corporation",
+                "sources": [
+                  "02_employment_exception.md"
+                ]
+              }
+            ],
+            "kind": "RELATIONSHIP",
+            "modality": "ASSERTED",
+            "participants": [
+              {
+                "role": "source",
+                "value": "Maya Chen"
+              },
+              {
+                "role": "target",
+                "value": "Northstar Logistics Corporation"
+              }
+            ],
+            "polarity": "NEGATED",
+            "predicate": "WORKS_FOR",
+            "score": 0.94,
+            "temporal": []
+          }
+        ],
+        "relationship_type": "WORKS_FOR",
+        "score": 0.94,
+        "source": {
+          "kind": "entity",
+          "name": "Maya Chen",
+          "type": "PERSON"
+        },
+        "supporting_evidence": [
+          {
+            "evidence": [
+              {
+                "location": {
+                  "field": null,
+                  "page": null,
+                  "paragraph": 1,
+                  "raw_end": 167,
+                  "raw_start": 116,
+                  "sentence": 2
+                },
+                "quote": "Maya Chen works for Northstar Logistics Corporation",
+                "sources": [
+                  "01_invoice_approval.txt"
+                ]
+              }
+            ],
+            "kind": "RELATIONSHIP",
+            "modality": "ASSERTED",
+            "participants": [
+              {
+                "role": "source",
+                "value": "Maya Chen"
+              },
+              {
+                "role": "target",
+                "value": "Northstar Logistics Corporation"
+              }
+            ],
+            "polarity": "AFFIRMED",
+            "predicate": "WORKS_FOR",
+            "score": 0.94,
+            "temporal": []
+          }
+        ],
+        "target": {
+          "kind": "entity",
+          "name": "Northstar Logistics Corporation",
+          "type": "ORGANIZATION"
+        }
+      }
+    ]
+  },
+  "schema_version": "1.0",
+  "status": "complete",
+  "warnings": []
+}

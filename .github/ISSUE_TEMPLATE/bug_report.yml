@@ -1,0 +1,48 @@
+name: Bug report
+description: Report a reproducible bridge, UiPath workflow, or documentation problem.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach real business documents, case snapshots, evidence quotes, credentials, or robot logs containing sensitive paths.
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Include DocChrono, Python, UiPath Studio/Robot, and UiPath.System.Activities versions.
+      placeholder: DocChrono 0.1.0; Python 3.13.x; UiPath 2026.x; UiPath.System.Activities 26.6.1
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Python bridge
+        - UiPath XAML
+        - Synthetic data
+        - Documentation
+        - CI or packaging
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction
+      description: Provide minimal steps using only synthetic data.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

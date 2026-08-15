@@ -1,0 +1,6 @@
+{
+  "Name": "DocChronoUiPathExamples",
+  "ProjectType": "Process",
+  "Description": "Five production-oriented UiPath examples for DocChrono.",
+  "MainFile": "Main.xaml"
+}

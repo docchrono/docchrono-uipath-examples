@@ -1,0 +1,9 @@
+{
+  "command": "export_evidence",
+  "parameters": {
+    "case_file": "../../artifacts/case.docchrono.json",
+    "relationship_type": "WORKS_FOR"
+  },
+  "request_id": "example-03-export-evidence",
+  "schema_version": "1.0"
+}

@@ -1,0 +1,10 @@
+{
+  "command": "find_path",
+  "parameters": {
+    "case_file": "../../artifacts/case.docchrono.json",
+    "end": "Payment #982",
+    "start": "Maya Chen"
+  },
+  "request_id": "example-04-find-path",
+  "schema_version": "1.0"
+}

@@ -1,0 +1,111 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" mva:VisualBasic.Settings="{x:Null}"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib"
+  xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib"
+  xmlns:this="clr-namespace:"
+  xmlns:ui="http://schemas.uipath.com/workflow/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  this:Main.in_PythonExe=".venv\Scripts\python.exe"
+  this:Main.in_WorkingDirectory="..\..">
+  <x:Members>
+    <x:Property Name="in_PythonExe" Type="InArgument(x:String)" />
+    <x:Property Name="in_WorkingDirectory" Type="InArgument(x:String)" />
+  </x:Members>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Run all five DocChrono examples" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="responseBuild" />
+      <Variable x:TypeArguments="x:String" Name="responseTimeline" />
+      <Variable x:TypeArguments="x:String" Name="responseEvidence" />
+      <Variable x:TypeArguments="x:String" Name="responsePath" />
+      <Variable x:TypeArguments="x:String" Name="responseReview" />
+      <Variable x:TypeArguments="x:String" Name="resolvedWorkingDirectory" />
+    </Sequence.Variables>
+    <Assign x:TypeArguments="x:String" DisplayName="Resolve repository working directory">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[resolvedWorkingDirectory]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[Path.GetFullPath(in_WorkingDirectory)]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:LogMessage DisplayName="Log example suite start" Level="Info">
+      <ui:LogMessage.Message>
+        <InArgument x:TypeArguments="x:Object">["Starting five DocChrono examples with " &amp; Path.GetFileName(in_PythonExe)]</InArgument>
+      </ui:LogMessage.Message>
+    </ui:LogMessage>
+    <ui:InvokeWorkflowFile DisplayName="Example 1 - Build source-linked case" WorkflowFileName="Examples\01_BuildCase.xaml" UnSafe="False">
+      <ui:InvokeWorkflowFile.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument">
+          <InArgument x:TypeArguments="x:String" x:Key="in_PythonExe">[in_PythonExe]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_WorkingDirectory">[resolvedWorkingDirectory]</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="out_ResponsePath">[responseBuild]</OutArgument>
+        </scg:Dictionary>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:InvokeWorkflowFile DisplayName="Example 2 - Export complete chronology" WorkflowFileName="Examples\02_ExportTimeline.xaml" UnSafe="False">
+      <ui:InvokeWorkflowFile.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument">
+          <InArgument x:TypeArguments="x:String" x:Key="in_PythonExe">[in_PythonExe]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_WorkingDirectory">[resolvedWorkingDirectory]</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="out_ResponsePath">[responseTimeline]</OutArgument>
+        </scg:Dictionary>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:InvokeWorkflowFile DisplayName="Example 3 - Trace relationship evidence" WorkflowFileName="Examples\03_TraceEvidence.xaml" UnSafe="False">
+      <ui:InvokeWorkflowFile.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument">
+          <InArgument x:TypeArguments="x:String" x:Key="in_PythonExe">[in_PythonExe]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_WorkingDirectory">[resolvedWorkingDirectory]</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="out_ResponsePath">[responseEvidence]</OutArgument>
+        </scg:Dictionary>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:InvokeWorkflowFile DisplayName="Example 4 - Find evidence graph path" WorkflowFileName="Examples\04_FindGraphPath.xaml" UnSafe="False">
+      <ui:InvokeWorkflowFile.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument">
+          <InArgument x:TypeArguments="x:String" x:Key="in_PythonExe">[in_PythonExe]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_WorkingDirectory">[resolvedWorkingDirectory]</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="out_ResponsePath">[responsePath]</OutArgument>
+        </scg:Dictionary>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:InvokeWorkflowFile DisplayName="Example 5 - Export human review queue" WorkflowFileName="Examples\05_ExportReviewQueue.xaml" UnSafe="False">
+      <ui:InvokeWorkflowFile.Arguments>
+        <scg:Dictionary x:TypeArguments="x:String, Argument">
+          <InArgument x:TypeArguments="x:String" x:Key="in_PythonExe">[in_PythonExe]</InArgument>
+          <InArgument x:TypeArguments="x:String" x:Key="in_WorkingDirectory">[resolvedWorkingDirectory]</InArgument>
+          <OutArgument x:TypeArguments="x:String" x:Key="out_ResponsePath">[responseReview]</OutArgument>
+        </scg:Dictionary>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:LogMessage DisplayName="Log example suite result" Level="Info">
+      <ui:LogMessage.Message>
+        <InArgument x:TypeArguments="x:Object">["Five DocChrono responses created: " &amp; String.Join(", ", {Path.GetFileName(responseBuild), Path.GetFileName(responseTimeline), Path.GetFileName(responseEvidence), Path.GetFileName(responsePath), Path.GetFileName(responseReview)})]</InArgument>
+      </ui:LogMessage.Message>
+    </ui:LogMessage>
+  </Sequence>
+</Activity>

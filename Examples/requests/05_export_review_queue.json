@@ -1,0 +1,8 @@
+{
+  "command": "export_review_queue",
+  "parameters": {
+    "case_file": "../../artifacts/case.docchrono.json"
+  },
+  "request_id": "example-05-export-review-queue",
+  "schema_version": "1.0"
+}
