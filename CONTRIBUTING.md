@@ -23,7 +23,7 @@ Supported development interpreters are CPython 3.11-3.13. Keep `docchrono==0.1.0
 
 Only `UiPath/DocChronoUiPathExamples/` is the UiPath project. Keep the root Python bridge, `Examples` fixtures/requests/expected snapshots, `.venv`, tests, and generated `artifacts` physically outside that publish root.
 
-The repository's `.uipath/config.json` disables automatic CLI/tool version synchronization and pins the `1.197` line used by CI. Review a CLI-line change explicitly with all XAML, runtime, and package checks; do not let a hosted runner silently upgrade it.
+The repository's `.uipath/config.json` disables automatic CLI/tool version synchronization and pins the `1.197` line used for governed validation. Review a CLI-line change explicitly with all XAML, runtime, and package checks; do not let a runner silently upgrade it.
 
 ## Required checks
 
@@ -45,7 +45,7 @@ For XAML or project changes:
 
 XML well-formedness alone is not UiPath validation.
 
-CI tests Python 3.11, 3.12, and 3.13 and separately builds/runs the UiPath project, rejects mismatched, malformed, and partial envelopes, and validates package contents.
+Public CI tests Python 3.11, 3.12, and 3.13 and runs secret-free static UiPath boundary/XML/response-contract checks. Full Analyzer/compiler/runtime/package validation requires an authenticated UiPath Studio/Robot or governed CI runner; the four `scripts/*uipath*.ps1` checks are the release evidence and must all pass.
 
 ## Design rules
 

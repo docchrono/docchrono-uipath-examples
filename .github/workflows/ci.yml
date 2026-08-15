@@ -46,39 +46,24 @@ jobs:
       - name: Test bridge and expected outputs
         run: python -m pytest -q
 
-  uipath:
-    name: UiPath XAML
+  uipath-contract:
+    name: UiPath static contract
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Install pinned UiPath CLI
-        run: npm install --global @uipath/cli@1.197.1
-      - name: Verify pinned UiPath CLI configuration
-        shell: pwsh
-        run: |
-          uip --version
-          uip config get autoVersionSync --output json
-          uip config get version --output json
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.13"
           cache: pip
-      - name: Install the bridge
-        run: python -m pip install .
-      - name: Validate and build the UiPath project
+      - name: Install static test dependency
+        run: python -m pip install pytest==9.1.1
+      - name: Verify UiPath project boundary and XML
         shell: pwsh
-        run: ./scripts/validate_uipath.ps1
-      - name: Run all five UiPath examples
-        shell: pwsh
-        run: ./scripts/run_uipath_project.ps1 -PythonExecutable (Get-Command python).Source
-      - name: Reject unsafe response envelopes
-        shell: pwsh
-        run: ./scripts/test_uipath_response_validation.ps1 -PythonExecutable (Get-Command python).Source
-      - name: Verify UiPath package contents
-        shell: pwsh
-        run: ./scripts/validate_uipath_package.ps1
+        run: ./scripts/validate_uipath_static.ps1
+      - name: Verify response-boundary XAML contract
+        run: python -m pytest tests/test_xaml_contract.py -q

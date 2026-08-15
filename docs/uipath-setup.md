@@ -76,6 +76,8 @@ In Studio, verify:
 
 Open `UiPath\DocChronoUiPathExamples\Framework\RunDocChronoBridge.xaml` and run **Analyze File**, then analyze the whole nested project under the organization's Workflow Analyzer policy.
 
+Public GitHub-hosted pull-request jobs intentionally run only secret-free static XAML/project-contract checks. The `uip rpa` tool bridges to Studio, and a fresh headless runner requires UiPath authentication/entitlement for Analyzer, compiler, runtime, and package operations. Run the repository's full UiPath scripts on a signed-in Studio/Robot machine or configure an approved external application in governed CI; never expose those credentials to public pull requests. See UiPath's [CLI authentication guide](https://docs.uipath.com/uipath-cli/standalone/latest/user-guide/authentication).
+
 ## 6. Configure arguments
 
 For a local repository run:

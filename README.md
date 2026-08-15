@@ -47,7 +47,7 @@ Read [architecture](docs/architecture.md) for component boundaries and failure f
 |---|---|
 | UiPath project | Windows compatibility, Visual Basic expressions, background-capable XAML process |
 | UiPath activity | `UiPath.System.Activities` `26.6.1` |
-| UiPath CLI in CI | `@uipath/cli` `1.197.1`; repository config disables automatic version sync and pins the `1.197` tool line |
+| UiPath CLI for governed validation | `@uipath/cli` `1.197.1`; repository config disables automatic version sync and pins the `1.197` tool line |
 | Python | 64-bit CPython `3.11`, `3.12`, or `3.13` |
 | DocChrono | exactly `0.1.0` |
 | Operating system | Windows robot or Studio machine with permission to start the configured Python executable |
@@ -376,7 +376,9 @@ Create the environment, then run:
 npx --yes pyright@1.1.413
 ```
 
-The integration tests use the real pinned DocChrono package and verify schema validation, safe failure envelopes, complete/partial exit semantics, fixture counts, chronology buckets, evidence polarity, graph traversal direction, the read-only review candidate, and Python's atomic response replacement. CI runs Python 3.11, 3.12, and 3.13, plus a UiPath XAML analysis/build/run, executable rejection tests for mismatched, malformed, and partial response envelopes, and package-content validation. XAML must also be opened, analyzed, and run in the pinned UiPath Studio/Robot environment before a production release.
+The integration tests use the real pinned DocChrono package and verify schema validation, safe failure envelopes, complete/partial exit semantics, fixture counts, chronology buckets, evidence polarity, graph traversal direction, the read-only review candidate, and Python's atomic response replacement. Public GitHub-hosted CI runs Python 3.11, 3.12, and 3.13 plus secret-free static checks over the UiPath project boundary, XML, and response-validation XAML contract.
+
+Full `uip rpa` Analyzer/compiler/runtime/package checks require a signed-in UiPath environment. Run `scripts/validate_uipath.ps1`, `scripts/run_uipath_project.ps1`, `scripts/test_uipath_response_validation.ps1`, and `scripts/validate_uipath_package.ps1` on an authenticated Studio/Robot machine or a governed CI runner using non-interactive credentials. UiPath describes the RPA CLI as a bridge to Studio and documents [CI authentication](https://docs.uipath.com/uipath-cli/standalone/latest/user-guide/authentication). Do not add credentials to public pull-request jobs.
 
 ## Limitations
 
